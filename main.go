@@ -4,10 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+
+	"github.com/ivanorribo/PokeAPI_bootdev/internal/pokeapi"
 )
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
+	cfg := &config{
+		client: pokeapi.NewClient(),
+	}
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan() // this stops and waits for the user to enter something
@@ -19,7 +24,7 @@ func main() {
 			continue
 		}
 		if cmd, ok := getCommands()[inputwords[0]]; ok {
-			err := cmd.callback()
+			err := cmd.callback(cfg)
 			if err != nil {
 				fmt.Printf("Error executing command: %v\n", err)
 			}
