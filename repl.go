@@ -10,9 +10,10 @@ import (
 )
 
 type config struct {
-	Nexturl     *string
-	Previousurl *string
-	client      *pokeapi.Client
+	Nexturl       *string
+	Previousurl   *string
+	client        *pokeapi.Client
+	caughtPokemon map[string]*pokeapi.Pokemon
 }
 
 func cleanInput(text string) []string {

@@ -35,6 +35,11 @@ type pokemonEncounter struct {
 	} `json:"pokemon"`
 }
 
+type Pokemon struct {
+	Name           string `json:"name"`
+	BaseExperience int    `json:"base_experience"`
+}
+
 func NewClient() *Client {
 	return &Client{
 		client: http.Client{
@@ -99,4 +104,34 @@ func (c *Client) PokemonEncounters(url string) ([]pokemonEncounter, error) {
 		return nil, err
 	}
 	return location.PokemonEncounters, nil
+}
+
+func (c *Client) GetPokemon(name string) (*Pokemon, error) {
+	var body []byte
+	url := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", name)
+	if cachedResponse, found := c.cache.Get(url); found {
+		body = cachedResponse
+	} else {
+		resp, err := c.client.Get(url)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+
+		body, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		if resp.StatusCode > 299 {
+			return nil, fmt.Errorf("error code: %d\n on body: %s", resp.StatusCode, body)
+		}
+		c.cache.Add(url, body)
+	}
+
+	pokemon := Pokemon{}
+	err := json.Unmarshal(body, &pokemon)
+	if err != nil {
+		return nil, err
+	}
+	return &pokemon, nil
 }

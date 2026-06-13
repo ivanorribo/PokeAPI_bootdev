@@ -6,7 +6,8 @@ import (
 
 func main() {
 	cfg := &config{
-		client: pokeapi.NewClient(),
+		client:        pokeapi.NewClient(),
+		caughtPokemon: make(map[string]*pokeapi.Pokemon),
 	}
 	startRepl(cfg)
 }
