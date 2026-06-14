@@ -38,6 +38,21 @@ type pokemonEncounter struct {
 type Pokemon struct {
 	Name           string `json:"name"`
 	BaseExperience int    `json:"base_experience"`
+	Stats          []struct {
+		Base_stat int `json:"base_stat"`
+		Stat      struct {
+			Name string `json:"name"`
+			Url  string `json:"url"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Type struct {
+			Name string `json:"name"`
+			Url  string `json:"url"`
+		} `json:"type"`
+	} `json:"types"`
+	Height int `json:"height"`
+	Weight int `json:"weight"`
 }
 
 func NewClient() *Client {
